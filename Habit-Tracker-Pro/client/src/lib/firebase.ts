@@ -1,14 +1,27 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from "firebase/auth";
 
+const requiredEnvVars = [
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_APP_ID",
+] as const;
+
+for (const key of requiredEnvVars) {
+  if (!import.meta.env[key]) {
+    throw new Error(`Missing required environment variable: ${key}. Check your .env file.`);
+  }
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCS8KYPYC5fvXg5DvUQvgu_IsdeimtgDjo",
-  authDomain: "progress-tracker-ai-e80c3.firebaseapp.com",
-  projectId: "progress-tracker-ai-e80c3",
-  storageBucket: "progress-tracker-ai-e80c3.firebasestorage.app",
-  messagingSenderId: "646435360273",
-  appId: "1:646435360273:web:65181a67c94fb0c7862bb0",
-  measurementId: "G-LMEZZMK849"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
