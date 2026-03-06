@@ -2,6 +2,15 @@ import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
 import admin from "./firebase";
+import rateLimit from "express-rate-limit";
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later." },
+});
 
 function getParam(param: string | string[] | undefined): string {
   if (!param) return "";
@@ -27,6 +36,8 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+
+  app.use("/api", apiLimiter);
 
   // =====================
   // AUTH

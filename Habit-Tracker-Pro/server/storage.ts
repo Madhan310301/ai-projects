@@ -1,5 +1,12 @@
+import mongoose from "mongoose";
 import { Habit } from "./models/Habits";
 import { Todo } from "./models/Todo";
+
+function validateObjectId(id: string): void {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("Invalid ID format");
+  }
+}
 
 export const storage = {
 
@@ -16,14 +23,17 @@ export const storage = {
   },
 
   async updateHabit(id: string, input: any) {
+    validateObjectId(id);
     return Habit.findByIdAndUpdate(id, input, { new: true });
   },
 
   async deleteHabit(id: string) {
+    validateObjectId(id);
     return Habit.findByIdAndDelete(id);
   },
 
   async logHabit(habitId: string, date: string) {
+    validateObjectId(habitId);
     return Habit.findByIdAndUpdate(
       habitId,
       { $addToSet: { logs: date } },
@@ -32,6 +42,7 @@ export const storage = {
   },
 
   async unlogHabit(habitId: string, date: string) {
+    validateObjectId(habitId);
     return Habit.findByIdAndUpdate(
       habitId,
       { $pull: { logs: date } },
@@ -267,10 +278,12 @@ export const storage = {
   },
 
   async updateTodo(id: string, input: any) {
+    validateObjectId(id);
     return Todo.findByIdAndUpdate(id, input, { new: true });
   },
 
   async deleteTodo(id: string) {
+    validateObjectId(id);
     return Todo.findByIdAndDelete(id);
   },
 };
